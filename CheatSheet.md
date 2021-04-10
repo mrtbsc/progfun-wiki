@@ -13,12 +13,11 @@ There are certainly a lot of things that can be improved! If you would like to c
 
 - Fork the repository [https://github.com/lampepfl/progfun-wiki](https://github.com/lampepfl/progfun-wiki) and check it out locally. To preview your changes, you need [jekyll](http://jekyllrb.com/). Navigate to your checkout and invoke `jekyll serve`, then open the page [http://localhost:4000/CheatSheet.html](http://localhost:4000/CheatSheet.html).
 
-## Evaluation Rules
+## Evaluation Rules 
 
 - Call by value: evaluates the function arguments before calling the function
 - Call by name: evaluates the function first, and then evaluates the arguments if need be
 
-<!-- code -->
 ```scala
     def example = 2      // evaluated when called
     val example = 2      // evaluated immediately
@@ -41,7 +40,7 @@ These are functions that take a function as a parameter or return functions.
     } 
     
     // same as above. Its type is (Int => Int) => (Int, Int) => Int  
-    def sum(f: Int => Int)(a: Int, b: Int): Int = { ... } 
+    def sum(f: Int => Int)(a: Int, b: Int): Int = f(a) + f(b) 
 
     // Called like this
     sum((x: Int) => x * x * x)          // Anonymous function, i.e. does not have a name  
@@ -66,7 +65,7 @@ To curry an existing function :
     val f3: Int => Int => Int = f2.curried // transform it to a curried version (type is Int => Int => Int)
     val f4: (Int, Int) => Int = Function.uncurried(f3) // go back to the uncurried version (type is (Int, Int) => Int)
 ```
-    
+
 ## Classes
 ```scala
     class MyClass(x: Int, val y: Int,
@@ -86,15 +85,29 @@ To curry an existing function :
     new MyClass(1, 2, 3) // creates a new object of type
 ```
 
-`this` references the current object, `assert(<condition>)` issues `AssertionError` if condition
-is not met. See [`scala.Predef`](https://www.scala-lang.org/api/current/scala/Predef$.html) for `require`, `assume` and `assert`.
+`this` references the current object, 
+`assert(<condition>)` issues `AssertionError` if condition is not met. 
+See [`scala.Predef`](https://www.scala-lang.org/api/current/scala/Predef$.html) for `require`, `assume` and `assert`.
 
 ## Operators
 
-`myObject myMethod 1` is the same as calling `myObject.myMethod(1)`
+```scala
+class Rational(x: Int, y: Int) {
+  ...
+  def < (that: Rational) = numer*that.denom 
+    < that.numer*denom 							// methods' names can be symbols
+  
+  def unary_- = new Rational(-numer,denom)		// and they can be unary
+}
 
-Operator (i.e. function) names can be alphanumeric, symbolic (e.g. `x1`, `*`, `+?%&`, `vector_++`, `counter_=`)
-    
+val a = new Rational(1,3)						// a: Rational = 1/3
+val b = new Rational(5,7)						// b: Rational = 5/7
+a.<(b)											// call to a method
+a < b											// other way to call a method
+
+-a												// call to unary method
+```
+
 The precedence of an operator is determined by its first character, with the following increasing order of priority:
 
     (all letters)
@@ -107,9 +120,11 @@ The precedence of an operator is determined by its first character, with the fol
     + -
     * / %
     (all other special characters)
-   
-The associativity of an operator is determined by its last character: Right-associative if ending with `:`, Left-associative otherwise.
-   
+
+"When two operators of the same precedence appear in an expression, associativity is used. Per example * and / have the same precedence and they are Left-to-Right-associative. So the expression “100 / 10 * 10” is worked as “(100 / 10) * 10” .
+
+The associativity is Left-to-Right by default. But if the operator's name ends with :, it's Right-to-Left. It's also so for assignment operators (= += -= *= /= %= >>= <<= &= ^= |=) and unary ones (!). "
+
 Note that assignment operators have lowest precedence. (Read Scala Language Specification 2.9 sections 6.12.3, 6.12.4 for more info)
 
 ## Class hierarchies
@@ -134,7 +149,7 @@ To create a runnable application in Scala:
       def main(args: Array[String]) = println("Hello world")  
     }
 ```
-    
+
 or
 ```scala
     object Hello extends App {
